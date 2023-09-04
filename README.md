@@ -14,5 +14,6 @@ Run without arguments to launch BG3ModManager. Must first be setup using --setup
        - You will need to click through the dotNET installers as they pop up.
  - "--steam"
      - Add to Steam as a non-Steam game.
+     - **Requires `pip install vdf pefile`**
 
 Both flags can be passed simultaneously.
