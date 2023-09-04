@@ -25,5 +25,7 @@ Run without arguments to launch BG3ModManager. Must first be setup using --setup
  - "--steam"
      - Add to Steam as a non-Steam game.
      - **Requires `pip install vdf pefile`**
+ - "--clean"
+     - Removes the WINEPREFIX. Can be used with --setup for a fresh install.
 
 Both flags can be passed simultaneously.
