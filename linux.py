@@ -4,6 +4,7 @@ import os
 import json
 import subprocess
 import argparse
+import shutil
 try:
     import vdf
     import pefile
@@ -132,6 +133,8 @@ def add_to_steam():
     # Save the shortcuts file
     try:
         with open(shortcuts_file, 'wb') as f:
+            print(f'Backing up {shortcuts_file} to {shortcuts_file}.bkup...')
+            shutil.copy(shortcuts_file, f"{shortcuts_file}.bkup")
             f.write(vdf.binary_dumps(shortcuts))
             print(f"Added {script_path} as 'BG3 Mod Manager - Linux' to Steam as a non-Steam game.")
     except Exception as e:
