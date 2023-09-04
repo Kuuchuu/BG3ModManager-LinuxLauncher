@@ -28,4 +28,4 @@ Run without arguments to launch BG3ModManager. Must first be setup using --setup
  - "--clean"
      - Removes the WINEPREFIX. Can be used with --setup for a fresh install.
 
-Both flags can be passed simultaneously.
+All flags can be passed simultaneously.
