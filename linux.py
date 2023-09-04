@@ -13,6 +13,7 @@ except ImportError:
     print("Please 'pip install vdf pefile' for adding to Steam")
 
 user = getpass.getuser() #getlogin()
+script_path = os.path.abspath(__file__)
 prefix_location = f"/home/{user}/.local/share/wineprefixes/BG3MM/"
 
 def run_command(cmd):
@@ -84,7 +85,6 @@ def extract_icon(exe_path, resource_type_id, resource_id_value, output_path):
     print(f"Resource with type ID {resource_type_id} and ID {resource_id_value} not found!")
 
 def add_to_steam():
-    script_path = os.path.abspath(__file__)
     extract_icon("BG3ModManager.exe", 3, 1, "bg3mm.png")
     icon_path = os.path.join(os.path.dirname(script_path), "bg3mm.png")
     steam_dir = os.path.expanduser("~/.steam/steam/userdata/")
@@ -172,4 +172,5 @@ def main():
         run_command(f"WINEPREFIX={prefix_location} wine BG3ModManager.exe")
 
 if __name__ == "__main__":
+    os.chdir(os.path.dirname(script_path))
     main()
