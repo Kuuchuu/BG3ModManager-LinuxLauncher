@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # Requires pip install vdf pefile
 import os
+import getpass
 import json
 import subprocess
 import argparse
@@ -11,7 +12,7 @@ try:
 except ImportError:
     print("Please 'pip install vdf pefile' for adding to Steam")
 
-user = os.getlogin()
+user = getpass.getuser() #getlogin()
 prefix_location = f"/home/{user}/.local/share/wineprefixes/BG3MM/"
 
 def run_command(cmd):
