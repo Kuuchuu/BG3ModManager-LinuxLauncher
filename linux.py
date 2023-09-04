@@ -147,7 +147,17 @@ def main():
     parser = argparse.ArgumentParser(description="Setup and launch BG3 Mod Manager.")
     parser.add_argument("--setup", action="store_true", help="Setup the WINEPREFIX and settings.json.")
     parser.add_argument("--steam", action="store_true", help="Add to Steam as a non-Steam game.")
+    parser.add_argument("--clean", action="store_true", help=f"Removes the WINEPREFIX '{prefix_location}'. Can be used with --setup for a fresh install.")
     args = parser.parse_args()
+    if args.clean:
+        try:
+            shutil.rmtree(prefix_location)
+            print(f"Removed WINEPREFIX '{prefix_location}'.")
+        except Exception as e:
+            print(f"Couldn't remove WINEPREFIX '{prefix_location}'.")
+            print(e)
+            print('Exiting.')
+            return
     if args.setup:
         setup_wineprefix()
         update_settings()
