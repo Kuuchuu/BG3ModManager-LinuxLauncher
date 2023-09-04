@@ -3,7 +3,17 @@
 
 Run without arguments to launch BG3ModManager. Must first be setup using --setup flag.
 
+**Dependencies:**
+ - [BG3ModManager](https://github.com/LaughingLeader/BG3ModManager)
+ - Python3
+ - wine
+ - winetricks
+ - Python Packages (for non-Steam game shortcut support):
+     - vdf
+     - pefile
+
 **Installation:**
+ - EXIT STEAM!
  - Put "[linux.py](https://raw.githubusercontent.com/Kuuchuu/BG3ModManager-LinuxLauncher/main/linux.py)" in the same directory as "BG3ModManager.exe"
  - Using a terminal run the python script with the "--setup" flag (optionally include the "--steam" flag)
 
