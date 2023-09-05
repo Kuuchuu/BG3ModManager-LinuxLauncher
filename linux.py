@@ -29,6 +29,8 @@ def setup_wineprefix():
     print("Installing dotnet472 if necessary...")
     # run_command(f"WINEPREFIX=/home/{user}/.BG3MM/ winetricks --force dotnet472")
     run_command(f"WINEPREFIX={prefix_location} winetricks dotnet472")
+    print("Installing d3dcompiler_47 if necessary...")
+    run_command(f"WINEPREFIX={prefix_location} winetricks d3dcompiler_47")
 
 def update_settings():
     print("Updating settings.json...")
