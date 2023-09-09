@@ -23,8 +23,9 @@ def run_command(cmd):
 def setup_wineprefix():
     # Create WINEPREFIX if it doesn't exist
     print("Checking if WINEPREFIX exists...")
-    if not os.path.exists(f"{prefix_location}"):
+    if not os.path.exists(prefix_location):
         print("Creating WINEPREFIX...")
+        os.makedirs(prefix_location)
         run_command(f"WINEPREFIX={prefix_location} winecfg")
     print("Installing dotnet472 if necessary...")
     # run_command(f"WINEPREFIX=/home/{user}/.BG3MM/ winetricks --force dotnet472")
