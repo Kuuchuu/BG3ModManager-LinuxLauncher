@@ -29,3 +29,8 @@ Run without arguments to launch BG3ModManager. Must first be setup using --setup
      - Removes the WINEPREFIX. Can be used with --setup for a fresh install.
 
 All flags can be passed simultaneously.
+
+**Known Issues:**
+
+ - BG3ModManager window may appear black when launched.
+     - Dragging the window around should fix the window's rendering.

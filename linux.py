@@ -20,12 +20,21 @@ def run_command(cmd):
     print('Running wine')
     subprocess.run(cmd, shell=True, check=True)
 
+def notify(message):
+    print(message)
+    try:
+        subprocess.run(["notify-send", "BG3MM Linux Setup", message])
+    except Exception as e:
+        print(e)
+
 def setup_wineprefix():
     # Create WINEPREFIX if it doesn't exist
     print("Checking if WINEPREFIX exists...")
     if not os.path.exists(prefix_location):
         print("Creating WINEPREFIX...")
         os.makedirs(prefix_location)
+        print(f"{prefix_location} created, running winecfg.")
+        notify("Click 'OK' on the 'Wine configuration' window when it appears to continue...")
         run_command(f"WINEPREFIX={prefix_location} winecfg")
     print("Installing dotnet472 if necessary...")
     # run_command(f"WINEPREFIX=/home/{user}/.BG3MM/ winetricks --force dotnet472")
@@ -66,14 +75,14 @@ def extract_icon(exe_path, resource_type_id, resource_id_value, output_path):
     try:
         pe = pefile.PE(exe_path)
     except Exception as e:
-        print(f"Couldn't read {exe_path}. 'pip install vdf pefile' if you have't already!")
+        notify(f"Couldn't read {exe_path}. 'pip install vdf pefile' if you have't already!")
         print(e)
         print('Exiting.')
         return
 
     # Check if DIRECTORY_ENTRY_RESOURCE is present
     if not hasattr(pe, 'DIRECTORY_ENTRY_RESOURCE'):
-        print("No resources found!")
+        notify("No resources found!")
         return
 
     # Go through resources and find the desired one
@@ -85,7 +94,7 @@ def extract_icon(exe_path, resource_type_id, resource_id_value, output_path):
                     with open(output_path, 'wb') as out_file:
                         out_file.write(data)
                     return
-    print(f"Resource with type ID {resource_type_id} and ID {resource_id_value} not found!")
+    notify(f"Resource with type ID {resource_type_id} and ID {resource_id_value} not found!")
 
 def add_to_steam():
     extract_icon("BG3ModManager.exe", 3, 1, "bg3mm.png")
@@ -95,7 +104,7 @@ def add_to_steam():
     # Find the appropriate user directory (assuming only one user)
     user_dirs = [d for d in os.listdir(steam_dir) if d.isdigit()]
     if not user_dirs:
-        print("Couldn't find the Steam user directory. Exiting.")
+        notify("Couldn't find the Steam user directory. Exiting.")
         return
     shortcuts_file = os.path.join(steam_dir, user_dirs[0], "config/shortcuts.vdf")
 
@@ -103,7 +112,7 @@ def add_to_steam():
         try:
             shortcuts = vdf.binary_loads(f.read())
         except Exception as e:
-            print(f"Couldn't read {shortcuts_file}. 'pip install vdf pefile' if you have't already!")
+            notify(f"Couldn't read {shortcuts_file}. 'pip install vdf pefile' if you have't already!")
             print(e)
             print('Exiting.')
             return
@@ -129,7 +138,7 @@ def add_to_steam():
     try:
         shortcuts['shortcuts'][str(len(shortcuts['shortcuts']))] = new_entry
     except Exception as e:
-        print(f"Couldn't add {script_path} as 'BG3 Mod Manager - Linux' to Steam as a non-Steam game.")
+        notify(f"Couldn't add {script_path} as 'BG3 Mod Manager - Linux' to Steam as a non-Steam game.")
         print(e)
         print('Exiting.')
         return
@@ -140,9 +149,9 @@ def add_to_steam():
             print(f'Backing up {shortcuts_file} to {shortcuts_file}.bkup...')
             shutil.copy(shortcuts_file, f"{shortcuts_file}.bkup")
             f.write(vdf.binary_dumps(shortcuts))
-            print(f"Added {script_path} as 'BG3 Mod Manager - Linux' to Steam as a non-Steam game.")
+            notify(f"Added {script_path} as 'BG3 Mod Manager - Linux' to Steam as a non-Steam game.")
     except Exception as e:
-        print(f"Couldn't save {shortcuts_file}.")
+        notify(f"Couldn't save {shortcuts_file}.")
         print(e)
         print('Exiting.')
         return
@@ -156,9 +165,9 @@ def main():
     if args.clean:
         try:
             shutil.rmtree(prefix_location)
-            print(f"Removed WINEPREFIX '{prefix_location}'.")
+            notify(f"Removed WINEPREFIX '{prefix_location}'.")
         except Exception as e:
-            print(f"Couldn't remove WINEPREFIX '{prefix_location}'.")
+            notify(f"Couldn't remove WINEPREFIX '{prefix_location}'.")
             print(e)
             print('Exiting.')
             return
@@ -170,7 +179,7 @@ def main():
     if not args.setup and not args.steam:
         print("Checking if WINEPREFIX exists...")
         if not os.path.exists(f"{prefix_location}"):
-            print("WINEPREFIX doesn't exist. Please run with --setup flag to create it.")
+            notify("WINEPREFIX doesn't exist. Please run with --setup flag to create it.")
             return
         run_command(f"WINEPREFIX={prefix_location} wine BG3ModManager.exe")
 
