@@ -30,6 +30,34 @@ class DbgOutput:
 debug = False
 dbgoutput = DbgOutput()
 
+def clean_dbgOut(dbgOut):
+    lines = dbgOut.split('\n')
+    if not lines:
+        return ''
+
+    processed = []
+    prev_line = lines[0]
+    count = 1
+
+    for current_line in lines[1:]:
+        if current_line == prev_line:
+            count += 1
+        else:
+            if count > 1:
+                processed.append(f"{prev_line}    [x{count}]")
+            else:
+                processed.append(prev_line)
+            count = 1
+        prev_line = current_line
+
+    # Handle the last line(s)
+    if count > 1:
+        processed.append(f"{prev_line}    [x{count}]")
+    else:
+        processed.append(prev_line)
+
+    return '\n'.join(processed)
+
 def termbin():
     global debug
     if not debug:
@@ -37,7 +65,7 @@ def termbin():
     notify("Uploading debug output to termbin.com...")
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
-    upload = dbgoutput.get_contents()
+    upload = clean_dbgOut(dbgoutput.get_contents())
     host = "termbin.com"
     port = 9999
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

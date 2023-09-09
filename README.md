@@ -35,6 +35,7 @@ Run without arguments to launch BG3ModManager. Must first be setup using --setup
      - Removes the WINEPREFIX. Can be used with --setup for a fresh install.
  - `--debug`
      - Uploads all output to termbin.com with a 1 month expiration date. Provides the URL to the user.
+       - Your WINEPREFIX location, script location, and likely username will be in the uploaded output, but the output will not be publicly listed (until you provide it).
 
 All flags can be passed simultaneously.
 
