@@ -43,5 +43,4 @@ All flags can be passed simultaneously.
 
  - BG3ModManager window may appear black when launched.
      - Dragging the window around should fix the window's rendering.
- - Uploaded debug output currently gets cut off in the middle of the .NET 4.6.1 installation.
-     - I'll have the script clean up the debug output before uploading (removing repeating fixmes)
+ - Uploaded debug output currently gets cut off in the middle of the .NET ~~4.6.1~~ 4.7.2 installation.
