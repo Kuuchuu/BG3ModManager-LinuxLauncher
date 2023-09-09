@@ -1,24 +1,59 @@
 #!/usr/bin/env python3
 # Requires pip install vdf pefile
-import os
+import argparse
 import getpass
 import json
-import subprocess
-import argparse
+import os
 import shutil
+import socket
+import subprocess
+import sys
 try:
     import vdf
     import pefile
 except ImportError:
-    print("Please 'pip install vdf pefile' for adding to Steam")
+    print("Please `pip install vdf pefile` for adding to Steam")
 
 user = getpass.getuser() #getlogin()
 script_path = os.path.abspath(__file__)
 prefix_location = f"/home/{user}/.local/share/wineprefixes/BG3MM/"
 
+class DbgOutput:
+    def __init__(self):
+        self.data = []
+    def write(self, s):
+        self.data.append(s)
+    def flush(self):
+        pass
+    def get_contents(self):
+        return ''.join(self.data)
+debug = False
+dbgoutput = DbgOutput()
+
+def termbin():
+    global debug
+    if not debug:
+        return
+    notify("Uploading debug output to termbin.com...")
+    sys.stdout = sys.__stdout__
+    sys.stderr = sys.__stderr__
+    upload = dbgoutput.get_contents()
+    host = "termbin.com"
+    port = 9999
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, port))
+    s.sendall(upload.encode())
+    response = s.recv(1024).decode().strip()
+    s.close()
+    print(f"{upload}\n\n")
+    notify(f"Debug output uploaded to: {response}")
+    return response
+
 def run_command(cmd):
-    print('Running wine')
-    subprocess.run(cmd, shell=True, check=True)
+    print(f'Running {cmd}')
+    result = subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    output = result.stdout.decode('utf-8')
+    print(output)
 
 def notify(message):
     print(message)
@@ -37,7 +72,6 @@ def setup_wineprefix():
         notify("Click 'OK' on the 'Wine configuration' window when it appears to continue...")
         run_command(f"WINEPREFIX={prefix_location} winecfg")
     print("Installing dotnet472 if necessary...")
-    # run_command(f"WINEPREFIX=/home/{user}/.BG3MM/ winetricks --force dotnet472")
     run_command(f"WINEPREFIX={prefix_location} winetricks dotnet472")
     print("Installing d3dcompiler_47 if necessary...")
     run_command(f"WINEPREFIX={prefix_location} winetricks d3dcompiler_47")
@@ -75,9 +109,9 @@ def extract_icon(exe_path, resource_type_id, resource_id_value, output_path):
     try:
         pe = pefile.PE(exe_path)
     except Exception as e:
-        notify(f"Couldn't read {exe_path}. 'pip install vdf pefile' if you have't already!")
+        notify(f"Couldn't read {exe_path}. `pip install vdf pefile` if you have't already!")
         print(e)
-        print('Exiting.')
+        print('Icon extraction failed.')
         return
 
     # Check if DIRECTORY_ENTRY_RESOURCE is present
@@ -112,9 +146,9 @@ def add_to_steam():
         try:
             shortcuts = vdf.binary_loads(f.read())
         except Exception as e:
-            notify(f"Couldn't read {shortcuts_file}. 'pip install vdf pefile' if you have't already!")
+            notify(f"Couldn't read {shortcuts_file}. `pip install vdf pefile` if you have't already!")
             print(e)
-            print('Exiting.')
+            print('Add to Steam failed.')
             return
     
     new_entry = {
@@ -140,7 +174,7 @@ def add_to_steam():
     except Exception as e:
         notify(f"Couldn't add {script_path} as 'BG3 Mod Manager - Linux' to Steam as a non-Steam game.")
         print(e)
-        print('Exiting.')
+        print('Add to Steam failed.')
         return
 
     # Save the shortcuts file
@@ -153,7 +187,7 @@ def add_to_steam():
     except Exception as e:
         notify(f"Couldn't save {shortcuts_file}.")
         print(e)
-        print('Exiting.')
+        print('Add to Steam failed.')
         return
 
 def main():
@@ -161,7 +195,15 @@ def main():
     parser.add_argument("--setup", action="store_true", help="Setup the WINEPREFIX and settings.json.")
     parser.add_argument("--steam", action="store_true", help="Add to Steam as a non-Steam game.")
     parser.add_argument("--clean", action="store_true", help=f"Removes the WINEPREFIX '{prefix_location}'. Can be used with --setup for a fresh install.")
+    parser.add_argument("--debug", action="store_true", help="Uploads all output to an unlisted paste on termbin.com with a 1 month expiration date. Provides the URL to the user.")
     args = parser.parse_args()
+    if args.debug:
+        notify("BG3 Mod Manager linux.py running! - DEBUG mode enabled.")
+        print("Output is now being captured and will upload to termbin and print to stdout when the script exits.")
+        global debug
+        debug = True
+        sys.stdout = dbgoutput
+        sys.stderr = dbgoutput
     if args.clean:
         try:
             shutil.rmtree(prefix_location)
@@ -169,8 +211,6 @@ def main():
         except Exception as e:
             notify(f"Couldn't remove WINEPREFIX '{prefix_location}'.")
             print(e)
-            print('Exiting.')
-            return
     if args.setup:
         setup_wineprefix()
         update_settings()
@@ -180,8 +220,10 @@ def main():
         print("Checking if WINEPREFIX exists...")
         if not os.path.exists(f"{prefix_location}"):
             notify("WINEPREFIX doesn't exist. Please run with --setup flag to create it.")
+            termbin()
             return
         run_command(f"WINEPREFIX={prefix_location} wine BG3ModManager.exe")
+    termbin()
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(script_path))

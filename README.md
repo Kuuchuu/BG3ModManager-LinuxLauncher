@@ -19,14 +19,23 @@ Run without arguments to launch BG3ModManager. Must first be setup using --setup
 
 **Flags:**
 
- - "--setup"
+ - `--setup`
      - Setup the WINEPREFIX and settings.json.
-       - You will need to click through the dotNET installers as they pop up.
- - "--steam"
+         - You will need to click through the .NET & DirectX installers as they pop up:
+             - .NET Framework 4.0
+             - .NET Framework 4.5
+             - .NET Framework 4.6
+             - .NET Framework 4.6.1
+             - .NET Framework 4.6.2
+             - .NET Framework 4.7.2
+             - D3DCompiler_47
+ - `--steam`
      - Add to Steam as a non-Steam game.
      - **Requires `pip install vdf pefile`**
- - "--clean"
+ - `--clean`
      - Removes the WINEPREFIX. Can be used with --setup for a fresh install.
+ - `--debug`
+     - Uploads all output to termbin.com with a 1 month expiration date. Provides the URL to the user.
 
 All flags can be passed simultaneously.
 
