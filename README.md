@@ -1,6 +1,9 @@
 # BG3ModManager-LinuxLauncher
 ### Linux Launcher and non-Steam game adder for [BG3ModManager](https://github.com/LaughingLeader/BG3ModManager)
 
+# CURRENTLY UNMAINTAINED!
+## It should work fine, but the moment I'm too busy to look into issues and improve the script. As soon as life lets up I'll be making some changes/improvements to how it functions.
+
 Run without arguments to launch BG3ModManager. Must first be setup using --setup flag.
 
 **Dependencies:**
