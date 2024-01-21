@@ -96,9 +96,8 @@ def setup_wineprefix():
     if not os.path.exists(prefix_location):
         print("Creating WINEPREFIX...")
         os.makedirs(prefix_location)
-        print(f"{prefix_location} created, running winecfg.")
-        notify("Click 'OK' on the 'Wine configuration' window when it appears to continue...")
-        run_command(f"WINEPREFIX={prefix_location} winecfg")
+        print(f"{prefix_location} created, running wineboot.")
+        run_command(f"WINEPREFIX={prefix_location} wineboot")
     print("Installing dotnet472 if necessary...")
     run_command(f"WINEPREFIX={prefix_location} winetricks dotnet472")
     print("Installing d3dcompiler_47 if necessary...")
