@@ -96,13 +96,12 @@ def setup_wineprefix():
     if not os.path.exists(prefix_location):
         print("Creating WINEPREFIX...")
         os.makedirs(prefix_location)
-        print(f"{prefix_location} created, running winecfg.")
-        notify("Click 'OK' on the 'Wine configuration' window when it appears to continue...")
-        run_command(f"WINEPREFIX={prefix_location} winecfg")
-    print("Installing dotnet472 if necessary...")
-    run_command(f"WINEPREFIX={prefix_location} winetricks dotnet472")
+        print(f"{prefix_location} created, running wineboot.")
+        run_command(f"WINEPREFIX={prefix_location} wineboot")
+    print("Installing dotnet472 if necessary.  This may take some time.")
+    run_command(f"WINEPREFIX={prefix_location} winetricks -q dotnet472")
     print("Installing d3dcompiler_47 if necessary...")
-    run_command(f"WINEPREFIX={prefix_location} winetricks d3dcompiler_47")
+    run_command(f"WINEPREFIX={prefix_location} winetricks -q d3dcompiler_47")
 
 def update_settings():
     print("Updating settings.json...")
@@ -117,6 +116,9 @@ def update_settings():
     
     # If settings.json doesn't exist, create it
     print("Checking if settings.json exists...")
+    if not os.path.exists("Data/"):
+        print("'Data' directory does not exist, creating...")
+        os.makedirs("Data")
     if not os.path.exists(settings_path):
         print("Creating settings.json...")
         with open(settings_path, "w") as f:
