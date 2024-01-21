@@ -98,10 +98,10 @@ def setup_wineprefix():
         os.makedirs(prefix_location)
         print(f"{prefix_location} created, running wineboot.")
         run_command(f"WINEPREFIX={prefix_location} wineboot")
-    print("Installing dotnet472 if necessary...")
-    run_command(f"WINEPREFIX={prefix_location} winetricks dotnet472")
+    print("Installing dotnet472 if necessary.  This may take some time.")
+    run_command(f"WINEPREFIX={prefix_location} winetricks -q dotnet472")
     print("Installing d3dcompiler_47 if necessary...")
-    run_command(f"WINEPREFIX={prefix_location} winetricks d3dcompiler_47")
+    run_command(f"WINEPREFIX={prefix_location} winetricks -q d3dcompiler_47")
 
 def update_settings():
     print("Updating settings.json...")
