@@ -116,6 +116,9 @@ def update_settings():
     
     # If settings.json doesn't exist, create it
     print("Checking if settings.json exists...")
+    if not os.path.exists("Data/"):
+        print("'Data' directory does not exist, creating...")
+        os.makedirs("Data")
     if not os.path.exists(settings_path):
         print("Creating settings.json...")
         with open(settings_path, "w") as f:
